@@ -61,7 +61,7 @@ function App() {
       >
         <div className='w-full duration-500 flex flex-col justify-center items-start'>
           {/* Render Current Slide */}
-          <div className="slide-container">
+          <div className="slide-container mx-auto">
             <h1>{slides[currentSlideIndex].slide}</h1>
           </div>
         </div>
