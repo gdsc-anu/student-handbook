@@ -28,7 +28,7 @@ function App() {
   };
 
   return (
-    <div className='max-w-[1400px] w-full m-auto py-16 px-4 bg-slate-50'>
+    <div className='max-w-[1400px] w-full m-auto py-16 px-4git bg-slate-50'>
       <div className='w-full duration-500 flex flex-col justify-center items-start'>
         {/* Render Current Slide */}
         <div className="slide-container">
