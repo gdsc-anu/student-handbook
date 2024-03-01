@@ -1,21 +1,35 @@
 import { useState } from 'react';
+import RxDotfilled from './RxDotFilled';
 import './App.css';
 
 function App() {
   const slides = [
     {
-      slide: `No hustle to find updated info on campus
-      Get all the info you need in one place`
+      slide: (
+        <div className='flex flex-col'>
+          <span>No hustle to find updated info on campus</span>
+          <span style={{ fontSize: '2em', color: 'green' }}>Get all the info you need in one place</span>
+        </div>
+      ),
     },
     {
-      slide: `No hustle to find updated info on campus
-      Get all the info you need in one place  yu`
+      slide: (
+        <div>
+          <span>No hustle to find updated info on campus</span>
+          <span>Get all the info you need in one place yu</span>
+        </div>
+      ),
     },
     {
-      slide: `No hustle to find updated info on campus
-      Get all the info you need in one place dtt`
-    }
+      slide: (
+        <div>
+          <span>No hustle to find updated info on campus</span>
+          <span>Get all the info you need in one place dtt</span>
+        </div>
+      ),
+    },
   ];
+  
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
@@ -35,7 +49,7 @@ function App() {
           <h1>{slides[currentSlideIndex].slide}</h1>
         </div>
 
-        {/* Navigation Buttons */}
+        {/* Navigation Buttons
         <div className="navigation-buttons mt-5 w-full flex justify-between items-center">
           <button 
             className='p-2 bg-slate-100 rounded-lg' 
@@ -49,9 +63,14 @@ function App() {
           >
             Next
           </button>
+        </div> */}
         </div>
+        <div className='text-2xl cursor-pointer'>
+          <RxDotfilled />
       </div>
+      
     </div>
+    
   );
 }
 
