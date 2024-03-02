@@ -1,3 +1,4 @@
+// App.jsx
 import { useState } from 'react';
 import RxDotfilled from './components/RxDotFilled';
 import slides from './components/slide';
@@ -62,7 +63,7 @@ function App() {
         </div>
       </div>
       <div className='text-2xl cursor-pointer'>
-        <RxDotfilled />
+        <RxDotfilled totalSlides={slides.length} currentSlideIndex={currentSlideIndex} />
       </div>
       {currentSlideIndex === slides.length - 1 && (
         <button className="bg-yellow-400 p-2 mt-5 rounded-full w-64 mx-auto text-xl">Getting Started</button>
