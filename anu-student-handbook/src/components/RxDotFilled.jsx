@@ -1,5 +1,6 @@
 // RxDotfilled.jsx
-import React from 'react';
+import React from 'prop-types';
+import PropTypes from 'react-'
 
 const RxDotfilled = ({ totalSlides, currentSlideIndex }) => {
   return (
@@ -20,3 +21,8 @@ const RxDotfilled = ({ totalSlides, currentSlideIndex }) => {
 };
 
 export default RxDotfilled;
+
+RxDotfilled.propTypes = {
+  totalSlides: PropTypes.number,
+  currentSlideIndex: PropTypes.bool
+}
