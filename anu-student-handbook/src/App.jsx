@@ -35,10 +35,10 @@ function App() {
             }}
          >
            <SwiperSlide>
-           <div className='text-left slide'>
-              <div className="mx-auto flex flex-col items-center">
-              <a href="/#"><p className="text-gray-400 mb-10">skip {'>'} </p></a>
-              <span>No hustle to find<br/> updated info on campus 1<br/></span>
+           <div className='text-left slide div'>
+              <div className="mx-auto flex flex-col">
+              <a href="/#" className='mr-auto'><p className="text-gray-400 mb-10">skip {'>'} </p></a>
+              <span className='mr-auto'>No hustle to find<br/> updated info on campus<br/></span>
               <span style={style}>
                 Get all the <br/> info you need <br/> in one place
               </span>  
@@ -46,16 +46,21 @@ function App() {
             </div>
            </SwiperSlide>
            <SwiperSlide>
-            <div className="flex flex-col text-right  mr-10 px-5 slide">
-              <a href="/#"><p className="text-gray-400 mb-10">skip {'>'} </p></a>
-              <span>No hustle to find <br/> updated info on campus 2<br/></span>
-              <span style={style}>Get all the <br/>info you need <br/>in one place yu</span>
+           <div className='text-right slide div1'>
+              <div className="mx-auto flex flex-col">
+              <a href="/#" className='ml-auto'><p className="text-gray-400 mb-10">skip {'>'} </p></a>
+              <span className='ml-auto'>No hustle to find <br/> updated info on campus<br/></span>
+              <span style={style}>Get all the <br/>info you need <br/>in one place</span>
+            </div>
             </div>
            </SwiperSlide>
            <SwiperSlide>
-              <div className="flex flex-col text-left  ml-10 px-5 slide">
-              <span>No hustle to find <br/> updated info on campus 3<br/></span>
-              <span style={style}>Get all the <br/>info you need <br/> in one place dtt</span>
+           <div className='text-left slide div'>
+              <div className="mx-auto flex flex-col">
+              <span className='mr-auto'>No hustle to find <br/> updated info on campus<br/></span>
+              <span style={style}>Get all the <br/>info you need <br/> in one place</span>
+              <button className="bg-yellow-400 p-2 mt-12 rounded-full w-64 mx-auto text-xl">Getting Started</button>
+              </div>
               </div>
            </SwiperSlide>
         </Swiper>
