@@ -1,19 +1,42 @@
 // App.jsx
 
 import './App.css';
-import { Swiper, SwiperSlide,  } from 'swiper/react';
-import  {  Pagination } from 'swiper/modules';
+// import { Swiper, SwiperSlide,  } from 'swiper/react';
+// import  {  Pagination } from 'swiper/modules';
 import 'swiper/css/pagination';
 import 'swiper/swiper-bundle.css';
-import { useState } from 'react';
+import HomePage from './components/HomePage';
+// import { useState } from 'react';
 
 
 
 function App() {
-  const [swiper, setSwiper] = useState(null)
+  // const [swiper, setSwiper] = useState(null)
   return (
-    <main className='max-w-[1400px] w-full m-auto py-16 px-4 bg-slate-50 wrapper'>
-         <Swiper 
+    <>
+   
+        <HomePage />
+        
+    </>
+
+    
+  );
+}
+
+export default App;
+
+
+
+
+
+
+
+
+
+      {/* 
+      
+      className='max-w-[1400px] w-full m-auto py-16 px-4 bg-slate-50 wrapper'
+      <Swiper 
             modules={[Pagination]}
             pagination={{ clickable: true, }} // Enable pagination with clickable dots
             spaceBetween={50}
@@ -63,21 +86,13 @@ function App() {
               </div>
               </div>
            </SwiperSlide>
-        </Swiper>
-        
-        
-    </main>
-
-    
-  );
-}
-
-export default App;
-
-
-const style = { 
+        </Swiper> 
+      
+      const style = { 
   fontSize: '2.3em', 
   color: 'green', 
   fontWeight: 'bold', 
   lineHeight: '3.5rem'
 }
+      
+      */}
