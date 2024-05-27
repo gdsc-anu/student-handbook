@@ -1,6 +1,25 @@
 import PropTypes from 'prop-types';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 export default function Header({firstToggle, secondToggle, fToggle, sToggle}) {
+    const [categories, setCategories] = useState();
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                // const res = await fetch("https://anu-handbook-b9deaf3b0e00.herokuapp.com/api/categories");
+                // const data = await res.json();
+                // setCategories(data);
+                const res = await axios.get("https://anu-handbook-b9deaf3b0e00.herokuapp.com/api/categories");
+                setCategories(res);
+                console.log(res)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        fetchCategories()
+    }, [])
     return (
         <header className="bg-gray-100 w-1/4 h-screen">
             <img 
@@ -10,6 +29,11 @@ export default function Header({firstToggle, secondToggle, fToggle, sToggle}) {
             />
 
             <div>
+                {
+                    categories && categories.map(category => (
+                        <p key={category._id}>{category.title}</p>
+                    ))
+                }
                 <p>Brief History <span onClick={firstToggle}>{ fToggle ? '⏬' : '>' }</span></p>
                 {fToggle && 
                     <ul>
