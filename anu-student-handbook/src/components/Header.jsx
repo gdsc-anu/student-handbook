@@ -55,13 +55,13 @@ export default function Header() {
           for (const category of categories) {
             for (const section of (sections[category.title] || [])) {
               try {
-                const res = await axios.get(`https://anu-handbook-b9deaf3b0e00.herokuapp.com/api/categories/${category.title}/section/${section.slug}/entries`);
+                const res = await axios.get(`https://anu-handbook-b9deaf3b0e00.herokuapp.com/api/${category.title.toLowerCase().split(" ").join("-").replace(/-?&-?/g, '-')}/${section.title.toLowerCase().split(" ").join("-").replace(/-?&-?/g, '-')}/entries`);
                 if (!entriesData[category.title]) {
                   entriesData[category.title] = {};
                 }
-                entriesData[category.title][section.slug] = res.data;
+                entriesData[category.title][section.title] = res.data;
               } catch (error) {
-                console.error(`Failed to fetch entries for section ${section.slug} of category ${category.title}`, error);
+                console.error(`Failed to fetch entries for section ${section.title} of category ${category.title}`, error);
               }
             }
           }
@@ -86,15 +86,20 @@ export default function Header() {
                 {categories.map(category => (
                     <div key={category.title}>
                         <p className='text-xs'>
-                            {category.title} <span onClick={() => toggleCategory(category.title)}>{isToggled(category.title) ? <img src='src/images/up.png' style={{width: '40px'}}/> : <img src='src/images/right.png' style={{width: '40px'}}/>}</span>                    
+                            {category.title} 
+                            <span onClick={() => toggleCategory(category.title)}>
+                                {isToggled(category.title) ? <img src='src/images/up.png' style={{width: '40px'}}/> : <img src='src/images/right.png' style={{width: '40px'}}/>}
+                            </span>                    
                         </p>
                         {isToggled(category.title) && (
                             <ul>
                                 {sections[category.title] && sections[category.title].map(sec => (
-                                    <li key={sec.title} className='text-xs'>{sec.title}
+                                    <li key={sec.title} className='text-xs'>
+                                        {sec.title}
+                                        <span onClick={() => toggleCategory(sec.title)}>{isToggled(sec.title) ? <img src='src/images/up.png' style={{width: '40px'}}/> : <img src='src/images/right.png' style={{width: '40px'}}/>}</span> 
                                         {isToggled(sec.title) && (
                                             <ul>
-                                                {entries[category.title] && entries[category.title][sec.slug].map(entry => (
+                                                {entries[category.title] && entries[category.title][sec.title].map(entry => (
                                                     <li key={entry.title} className='text-xs'>{entry.title}</li>
                                                 ))}
                                             </ul>
