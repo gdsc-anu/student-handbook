@@ -29,7 +29,7 @@ const Footer = (onBack, onNext, disableBack, disableNext) => {
 
 export default Footer;
 
-Footer.PropTypes = {
+Footer.propTypes = {
     onBack: PropTypes.func.isRequired,
     onNext: PropTypes.func.isRequired,
     disableBack: PropTypes.bool.isRequired,

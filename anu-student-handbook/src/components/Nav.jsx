@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faSearch, faXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
 import PropsTypes from 'prop-types';
 
 export default function Nav({handleToggle, toggleHandler}) {
@@ -28,10 +28,6 @@ export default function Nav({handleToggle, toggleHandler}) {
                 />
                 
             </div>
-            {/* <FontAwesomeIcon 
-                    icon={faMagnifyingGlass}
-                    className='md:hidden inline text-gray-500 w-40'
-            /> */}
             <img 
                 src="src/images/icons8-chatbot-32.png" 
                 alt="vector"
