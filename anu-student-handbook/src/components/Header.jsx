@@ -1,19 +1,14 @@
 import PropTypes from 'prop-types';
 
-export default function Header({categories, sections, entries, toggleCategory, isToggled, onEntryClick}) {
-    
+export default function Header({categories, sections, entries, toggleCategory, isToggled, onEntryClick, toggleHandler}) {
     return (
-        <header className="bg-gray-100 w-1/4 h-screen p-2">
-            <img 
-                src="https://www.figma.com/file/gjzrE5bfOhNoYWNSej5Ell/image/d1acd497fdc6d2dea2556a2609ef6f4d4838dc8d" 
-                alt="school-logo"
-                className='w-52 px-6 py-10'
-            />
-
-            <div >
+        toggleHandler &&
+        <header className="bg-gray-100 md:w-1/4 p-2 header_container">
+        <div className='header_container_content'>
+            <div>
                 {categories.map(category => (
-                    <div key={category.title}>
-                        <p className='text-base'>
+                    <div key={category.title} >
+                        <p className='text-xs md:text-sm'>
                             {category.title} 
                             <span 
                                 onClick={() => toggleCategory(category.title)}
@@ -28,7 +23,7 @@ export default function Header({categories, sections, entries, toggleCategory, i
                             <ul>
                                 {sections[category.title] && sections[category.title].map(sec => (
                                     <li key={sec.title} 
-                                        className='text-sm'
+                                        className='text-xs ml-auto'
                                     >
                                         {sec.title}
 
@@ -61,7 +56,13 @@ export default function Header({categories, sections, entries, toggleCategory, i
                     </div>
                 ))}
             </div>
-        </header>
+        </div>
+        <div className="scrollbar">
+        <div className="scrollbar__track" />
+        <div className="scrollbar__thumb" />
+</div>
+    </header>
+        
     )
 }
 
@@ -72,4 +73,5 @@ Header.propTypes = {
     toggleCategory: PropTypes.func.isRequired,
     isToggled: PropTypes.func.isRequired,
     onEntryClick: PropTypes.func.isRequired,
+    toggleHandler: PropTypes.bool.isRequired,
 }

@@ -1,9 +1,12 @@
 import Header from "./Header";
 import Nav from "./Nav";
 import Article from "./Article";
+import Footer from "./Footer";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import useCategoryToggles from './useCatToggles';
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faXmark, faBars } from "@fortawesome/free-solid-svg-icons";
 
 
 
@@ -14,6 +17,20 @@ export default function HomePage() {
     const { toggles, toggleCategory, isToggled } = useCategoryToggles();
     // const [selectedEntry, setSelectedEntry] = useState(null);
     const [selectedEntryIndex, setSelectedEntryIndex] = useState(null);
+    const [toggleHandler, setToggleHandler] = useState(false);
+
+    const handleToggle = () => {
+        // setToggleHandler(toggleHandler.isBool ? toggleHandler.xClose : toggleHandler.menuBurger);
+        setToggleHandler(!toggleHandler);
+    }
+
+    /**
+     * {
+        isBool: true,
+        xClose: <FontAwesomeIcon icon={faXmark} size="2x" color="#C92A2A"/>,
+        menuBurger: <FontAwesomeIcon icon={faBars} size="2x" color="#C92A2A"/>
+    }
+     */
 
     // UseEffect to fetch categories
     useEffect(() => {
@@ -36,6 +53,7 @@ export default function HomePage() {
                 const sectionsData = await Promise.all(
                     categories.map(async category => {
                         const res = await axios.get(`https://anu-handbook-b9deaf3b0e00.herokuapp.com/api/${category.title.toLowerCase().split(" ").join("-").replace(/-?&-?/g, '-')}/sections`);
+                        // console.log({ category: category.title, sections: res.data });
                         return { category: category.title, sections: res.data };
                     })
                 );
@@ -44,6 +62,7 @@ export default function HomePage() {
                     acc[curr.category] = curr.sections;
                     return acc;
                 }, {});
+                // console.log(sectByCat);
                 setSections(sectByCat);
                 
             }   catch (error) {
@@ -56,18 +75,18 @@ export default function HomePage() {
     //useEffect to fetch entries
     useEffect(() => {
         const fetchEntries = async () => {
-          const entriesData = {};
-          for (const category of categories) {
-            for (const section of (sections[category.title] || [])) {
-              try {
-                const res = await axios.get(`https://anu-handbook-b9deaf3b0e00.herokuapp.com/api/${category.title.toLowerCase().split(" ").join("-").replace(/-?&-?/g, '-')}/${section.title.toLowerCase().split(" ").join("-").replace(/-?&-?/g, '-')}/entries`);
-                if (!entriesData[category.title]) {
-                  entriesData[category.title] = {};
+            const entriesData = {};
+            for (const category of categories) {
+                for (const section of (sections[category.title] || [])) {
+                try {
+                    const res = await axios.get(`https://anu-handbook-b9deaf3b0e00.herokuapp.com/api/${category.title.toLowerCase().split(" ").join("-").replace(/-?&-?/g, '-')}/${section.title.toLowerCase().split(" ").join("-").replace(/-?&-?/g, '-')}/entries`);
+                    if (!entriesData[category.title]) {
+                    entriesData[category.title] = {};
+                    }
+                    entriesData[category.title][section.title] = res.data;
+                } catch (error) {
+                    console.error(`Failed to fetch entries for section ${section.title} of category ${category.title}`, error);
                 }
-                entriesData[category.title][section.title] = res.data;
-              } catch (error) {
-                console.error(`Failed to fetch entries for section ${section.title} of category ${category.title}`, error);
-              }
             }
           }
           setEntries(entriesData);
@@ -79,7 +98,7 @@ export default function HomePage() {
        
       }, [sections, categories]);
 
-    //   console.log(entries)
+    // console.log(entries)
 
     const handleEntryClick = (index) => {
         setSelectedEntryIndex(index);
@@ -100,26 +119,34 @@ export default function HomePage() {
    
 
     return(
-        <main className="flex ">
-            <Header
-                categories={categories}
-                sections={sections}
-                entries={entries}
-                toggleCategory={toggleCategory}
-                isToggled={isToggled}
-                onEntryClick={handleEntryClick}
+        <main>
+            <Nav
+                handleToggle={handleToggle}
+                toggleHandler={toggleHandler}
             />
-            <div className="flex flex-col w-3/4">
-                <Nav/>
+        
+            <div className="flex">
+                <Header
+                        categories={categories}
+                        sections={sections}
+                        entries={entries}
+                        toggleCategory={toggleCategory}
+                        isToggled={isToggled}
+                        onEntryClick={handleEntryClick}
+                        toggleHandler={toggleHandler}
+                />
                 <Article
-                    // entries={entries}
                     selectedEntry={selectedEntryIndex}
-                    onBack={handleBack}
-                    onNext={handleNext}
-                    disableBack={selectedEntryIndex === null || selectedEntryIndex === 0}
-                    disableNext={selectedEntryIndex === null || selectedEntryIndex === entries.length - 1}
+                   
                 />
             </div>
+            <Footer 
+                onBack={handleBack}
+                onNext={handleNext}
+                disableBack={selectedEntryIndex === null || selectedEntryIndex === 0}
+                disableNext={selectedEntryIndex === null || selectedEntryIndex === entries.length - 1}
+            />
+            
         </main>
     )
 }

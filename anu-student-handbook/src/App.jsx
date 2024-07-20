@@ -7,6 +7,7 @@ import 'swiper/css/pagination';
 import 'swiper/swiper-bundle.css';
 import HomePage from './components/HomePage';
 // import { useState } from 'react';
+// import Testing from './components/Testing';
 
 
 
@@ -14,7 +15,7 @@ function App() {
   // const [swiper, setSwiper] = useState(null)
   return (
     <>
-   
+      {/* <Testing /> */}
         <HomePage />
         
     </>
