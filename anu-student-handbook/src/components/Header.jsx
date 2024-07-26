@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 export default function Header({categories, sections, entries, toggleCategory, isToggled, onEntryClick, toggleHandler}) {
     return (
         toggleHandler &&
-        <header className="bg-gray-100 md:w-1/4 p-2 header_container">
+        <header className="bg-gray-100 w-3/4 p-2 header_container">
         <div className='header_container_content'>
             <div>
                 {categories.map(category => (

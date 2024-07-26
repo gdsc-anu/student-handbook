@@ -14,7 +14,7 @@ export default function Nav({handleToggle, toggleHandler}) {
             <img 
                     src="https://www.figma.com/file/gjzrE5bfOhNoYWNSej5Ell/image/d1acd497fdc6d2dea2556a2609ef6f4d4838dc8d" 
                     alt="school-logo"
-                    className='w-16 md:w-40 ml-auto'
+                    className='w-16 md:w-40 ml-20'
             />
             <div className="relative mx-4">
                 <input 
