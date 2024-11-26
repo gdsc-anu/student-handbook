@@ -1,13 +1,12 @@
 import PropTypes from "prop-types";
 
-const Footer = (onBack, onNext, disableBack, disableNext) => {
+const Footer = ({onBack, onNext}) => {
     return (
         <div className="inset-x-0 bottom-0">
             <div className="flex justify-around">
                 <button 
                     className="bg-gray-300 py-1 px-6 rounded-2xl" 
                     onClick={onBack}
-                    disabled={disableBack}
                 >
                     Back
                 </button>
@@ -15,7 +14,6 @@ const Footer = (onBack, onNext, disableBack, disableNext) => {
                 <button 
                     className="bg-gray-300 py-1 px-6 rounded-2xl"
                     onClick={onNext}
-                    disabled={disableNext}
                 >
                     Next
                 </button>
@@ -32,6 +30,4 @@ export default Footer;
 Footer.propTypes = {
     onBack: PropTypes.func.isRequired,
     onNext: PropTypes.func.isRequired,
-    disableBack: PropTypes.bool.isRequired,
-    disableNext: PropTypes.bool.isRequired,
 }

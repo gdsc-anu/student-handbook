@@ -2,151 +2,104 @@ import Header from "./Header";
 import Nav from "./Nav";
 import Article from "./Article";
 import Footer from "./Footer";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import useCategories from "../lib/api"
 import useCategoryToggles from './useCatToggles';
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faXmark, faBars } from "@fortawesome/free-solid-svg-icons";
-
+import { useState } from "react";
 
 
 export default function HomePage() {
-    const [categories, setCategories] = useState([]);
-    const [sections, setSections] = useState({});
-    const [entries, setEntries] = useState([]);
-    const { toggles, toggleCategory, isToggled } = useCategoryToggles();
-    // const [selectedEntry, setSelectedEntry] = useState(null);
-    const [selectedEntryIndex, setSelectedEntryIndex] = useState(null);
+    const { toggleCategory, isToggled } = useCategoryToggles();
+    const [selectedSec, setSelectedSec] = useState(null);
     const [toggleHandler, setToggleHandler] = useState(false);
-
-    const handleToggle = () => {
-        // setToggleHandler(toggleHandler.isBool ? toggleHandler.xClose : toggleHandler.menuBurger);
-        setToggleHandler(!toggleHandler);
-    }
-
-    /**
-     * {
-        isBool: true,
-        xClose: <FontAwesomeIcon icon={faXmark} size="2x" color="#C92A2A"/>,
-        menuBurger: <FontAwesomeIcon icon={faBars} size="2x" color="#C92A2A"/>
-    }
-     */
-
-    // UseEffect to fetch categories
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const res = await axios.get("https://anu-handbook-b9deaf3b0e00.herokuapp.com/api/categories");
-                setCategories(res.data);
-            } catch (error) {
-                console.error(error)
-            }
-        }
-
-        fetchCategories();
-    }, [])
-
-    // UseEffect to fetch sections
-    useEffect(() => {
-        const fetchSection = async () => {
-            try {
-                const sectionsData = await Promise.all(
-                    categories.map(async category => {
-                        const res = await axios.get(`https://anu-handbook-b9deaf3b0e00.herokuapp.com/api/${category.title.toLowerCase().split(" ").join("-").replace(/-?&-?/g, '-')}/sections`);
-                        // console.log({ category: category.title, sections: res.data });
-                        return { category: category.title, sections: res.data };
-                    })
-                );
-                
-                const sectByCat = sectionsData.reduce((acc, curr) => {
-                    acc[curr.category] = curr.sections;
-                    return acc;
-                }, {});
-                // console.log(sectByCat);
-                setSections(sectByCat);
-                
-            }   catch (error) {
-                console.error(error)
-            }
-        }
-        fetchSection();
-    }, [categories]);
-
-    //useEffect to fetch entries
-    useEffect(() => {
-        const fetchEntries = async () => {
-            const entriesData = {};
-            for (const category of categories) {
-                for (const section of (sections[category.title] || [])) {
-                try {
-                    const res = await axios.get(`https://anu-handbook-b9deaf3b0e00.herokuapp.com/api/${category.title.toLowerCase().split(" ").join("-").replace(/-?&-?/g, '-')}/${section.title.toLowerCase().split(" ").join("-").replace(/-?&-?/g, '-')}/entries`);
-                    if (!entriesData[category.title]) {
-                    entriesData[category.title] = {};
-                    }
-                    entriesData[category.title][section.title] = res.data;
-                } catch (error) {
-                    console.error(`Failed to fetch entries for section ${section.title} of category ${category.title}`, error);
-                }
-            }
-          }
-          setEntries(entriesData);
-        };
+    const [currEntry, setCurrEntry] = useState(0);
+    const [currSec, setCurrSec] = useState(0);
+    const [currCat, setCurrCat] = useState(0);
     
-        if (Object.keys(sections).length > 0) {
-          fetchEntries();
-        }
-       
-      }, [sections, categories]);
-
-    // console.log(entries)
-
+    const handleToggle = () =>  setToggleHandler(!toggleHandler);
     const handleEntryClick = (index) => {
-        setSelectedEntryIndex(index);
-      };
-    
-    const handleNext = () => {
-        if (selectedEntryIndex !== null && selectedEntryIndex < entries.length - 1) {
-            setSelectedEntryIndex(selectedEntryIndex + 1);
-        }
+        setSelectedSec(index);
+        setCurrEntry(0)
     };
     
-    const handleBack = () => {
-        if (selectedEntryIndex !== null && selectedEntryIndex > 0) {
-          setSelectedEntryIndex(selectedEntryIndex - 1);
+    const { data, isLoading, error } = useCategories();
+    
+    if (isLoading) return <p>Loading...</p>;
+    if (error) return <p>Error fetching categories: {error.message}</p>;
+    
+    const { catList, entryList } = data;
+    
+    const categoryKeys = Object.keys(catList); // List of category keys
+    const currentCategory = catList[categoryKeys[currCat]]; // Current category
+    const sections = Object.keys(currentCategory); // Sections within the current category
+    const currentSection = currentCategory[sections[currSec]]; // Current section entries
+    const currentEntry = currentSection[currEntry]; //
+    console.log(currentEntry)
+
+    const handleNextEntry = () => {
+        // Move to the next entry
+        if (currEntry < currentSection.length - 1) {
+            setCurrEntry((prevIndex) => prevIndex + 1);
+        }
+        // Move to the next section
+        else if (currSec < sections.length - 1) {
+            setCurrSec((prevIndex) => prevIndex + 1);
+            setCurrEntry(0); // Reset entry index for the new section
+        }
+        // Move to the next category
+        else if (currCat < categoryKeys.length - 1) {
+            setCurrCat((prevIndex) => prevIndex + 1);
+            setCurrSec(0); // Reset section index for the new category
+            setCurrEntry(0); // Reset entry index for the new category
         }
     };
 
-   
+    const handlePreviousEntry = () => {
+        // Move to the previous entry
+        if (currEntry > 0) {
+            setCurrEntry((prevIndex) => prevIndex - 1);
+        }
+        // Move to the previous section
+        else if (currSec > 0) {
+            setCurrSec((prevIndex) => prevIndex - 1);
+            const prevSection = currentCategory[sections[currSec - 1]];
+            setCurrEntry(prevSection.length - 1); // Go to the last entry of the previous section
+        }
+        // Move to the previous category
+        else if (currCat > 0) {
+            setCurrCat((prevIndex) => prevIndex - 1);
+            const prevCategory = catList[categoryKeys[currCat - 1]];
+            const lastSection = Object.keys(prevCategory).slice(-1)[0]; // Last section of the previous category
+            const lastSectionEntries = prevCategory[lastSection];
+            setCurrSec(Object.keys(prevCategory).length - 1); // Set section to the last
+            setCurrEntry(lastSectionEntries.length - 1); // Set entry to the last
+        }
+    };
+    
 
     return(
         <main>
-            <Nav
+           <Nav
                 handleToggle={handleToggle}
                 toggleHandler={toggleHandler}
             />
-        
             <div className="flex">
                 <Header
-                        categories={categories}
-                        sections={sections}
-                        entries={entries}
-                        toggleCategory={toggleCategory}
-                        isToggled={isToggled}
-                        onEntryClick={handleEntryClick}
-                        toggleHandler={toggleHandler}
+                    categories={catList}
+                    toggleCategory={toggleCategory}
+                    isToggled={isToggled}
+                    onEntryClick={handleEntryClick}
+                    toggleHandler={toggleHandler}
                 />
                 <Article
-                    selectedEntry={selectedEntryIndex}
-                   
+                   selectedEntry={selectedSec}
+                   entryList={entryList}
+                   currEntry={currEntry}
                 />
             </div>
             <Footer 
-                onBack={handleBack}
-                onNext={handleNext}
-                disableBack={selectedEntryIndex === null || selectedEntryIndex === 0}
-                disableNext={selectedEntryIndex === null || selectedEntryIndex === entries.length - 1}
-            />
-            
+                onBack={handlePreviousEntry}
+                onNext={handleNextEntry}
+            /> 
         </main>
     )
 }

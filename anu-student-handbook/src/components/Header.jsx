@@ -1,60 +1,50 @@
 import PropTypes from 'prop-types';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 
-export default function Header({categories, sections, entries, toggleCategory, isToggled, onEntryClick, toggleHandler}) {
+export default function Header({categories, toggleCategory, onEntryClick, toggleHandler, isToggled}) {
+    const Capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+    let catObj = Object.keys(categories)
     return (
         toggleHandler &&
         <header className="bg-gray-100 w-3/4 p-2 header_container">
         <div className='header_container_content'>
             <div>
-                {categories.map(category => (
-                    <div key={category.title} >
-                        <p className='text-xs md:text-sm'>
-                            {category.title} 
-                            <span 
-                                onClick={() => toggleCategory(category.title)}
-                            >
-                                {isToggled(category.title) ? 
-                                    <img src='src/images/up.png' style={{width: '40px'}}/> : 
-                                    <img src='src/images/right.png' style={{width: '40px'}}/>
-                                }
-                            </span>                    
-                        </p>
-                        {isToggled(category.title) && (
-                            <ul>
-                                {sections[category.title] && sections[category.title].map(sec => (
-                                    <li key={sec.title} 
-                                        className='text-xs ml-auto'
+                {catObj.map((category, index) => {
+                        return (
+                            <div key={index} className='header_container_content_category'>
+                                <h2 className='font-black text-xs sm:text-sm hover:bg-gray-200 active:bg-red-400'
+                                    onClick={() => toggleCategory(category)}
+                                >
+                                    {category.toUpperCase()}
+                                    {/* <span 
+                                        onClick={() => toggleCategory(category)}
                                     >
-                                        {sec.title}
-
-                                        <span 
-                                            onClick={() => toggleCategory(sec.title)}
-                                        >
-                                            {isToggled(sec.title) ? 
-                                                <img src='src/images/up.png' style={{width: '40px'}}/> : 
-                                                <img src='src/images/right.png' style={{width: '40px'}}/>
-                                            }
-                                        </span> 
-
-                                        {isToggled(sec.title) && (
-                                            <ul>
-                                                {entries[category.title] && entries[category.title][sec.title].map((entry, index) => (
-                                                    <li 
-                                                        key={index} 
-                                                        className='text-xs' 
-                                                        onClick={() => onEntryClick(entry)}
+                                        {isToggled(category) ? 
+                                            <FontAwesomeIcon icon={faMinus} className='sm:ml-12 ml-4'/>:
+                                            <FontAwesomeIcon icon={faPlus} className='sm:ml-12 ml-4'/>
+                                        }
+                                    </span>   */}
+                                </h2>
+                                {isToggled(category) && 
+                                    (<ul>
+                                        {
+                                            categories[category].map((section, index) => {
+                                                return (
+                                                    <li key={index} className='pl-4 border-l-2 border-slate-400 hover:bg-gray-200 pb-2 active:bg-red-400'
+                                                        onClick={() => onEntryClick(section)}
                                                     >
-                                                        {entry.title}
+                                                        {Capitalize(section)}
                                                     </li>
-                                                ))}
-                                            </ul>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </div>
-                ))}
+                                                )
+                                            })
+                                        }
+                                    </ul>)
+                                }
+                            </div>
+                        )
+                    })
+                }
             </div>
         </div>
         <div className="scrollbar">
@@ -67,11 +57,9 @@ export default function Header({categories, sections, entries, toggleCategory, i
 }
 
 Header.propTypes = {
-    categories: PropTypes.array.isRequired,
-    sections: PropTypes.object.isRequired,
-    entries: PropTypes.object.isRequired,
-    toggleCategory: PropTypes.func.isRequired,
-    isToggled: PropTypes.func.isRequired,
-    onEntryClick: PropTypes.func.isRequired,
+    categories: PropTypes.object.isRequired,
     toggleHandler: PropTypes.bool.isRequired,
+    isToggled: PropTypes.func.isRequired,
+    toggleCategory: PropTypes.func.isRequired,
+    onEntryClick: PropTypes.func.isRequired
 }
