@@ -5,7 +5,7 @@ import PropsTypes from 'prop-types';
 export default function Nav({handleToggle, toggleHandler}) {
     return(
         
-        <div className="flex bg-gray-100 py-5 items-center">
+        <div className="flex bg-gray-100 py-5 items-center px-4">
         
             {(toggleHandler) ? 
                 <FontAwesomeIcon icon={faXmark} color="#C92A2A" onClick={handleToggle}/>:
@@ -14,7 +14,7 @@ export default function Nav({handleToggle, toggleHandler}) {
             <img 
                     src="https://www.figma.com/file/gjzrE5bfOhNoYWNSej5Ell/image/d1acd497fdc6d2dea2556a2609ef6f4d4838dc8d" 
                     alt="school-logo"
-                    className='w-16 md:w-40 ml-20'
+                    className='w-16 md:w-40 ml-2 sm:ml-20'
             />
             <div className="relative mx-4">
                 <input 
@@ -25,9 +25,12 @@ export default function Nav({handleToggle, toggleHandler}) {
                 <FontAwesomeIcon 
                     icon={faSearch} 
                     className=" absolute top-0 left-3 mt-2 text-gray-500"
-                />
-                
+                />   
             </div>
+            {/* <FontAwesomeIcon 
+                icon={faSearch} 
+                className="sm:hidden text-gray-500 mx-auto"
+            /> */}
             <img 
                 src="src/images/icons8-chatbot-32.png" 
                 alt="vector"

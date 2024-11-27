@@ -1,7 +1,7 @@
 import Header from "./Header";
 import Nav from "./Nav";
 import Article from "./Article";
-import Footer from "./Footer";
+import Pulse from "./Pulse";
 import useCategories from "../lib/api"
 import useCategoryToggles from './useCatToggles';
 import { useState } from "react";
@@ -23,7 +23,7 @@ export default function HomePage() {
     
     const { data, isLoading, error } = useCategories();
     
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <Pulse />;
     if (error) return <p>Error fetching categories: {error.message}</p>;
     
     const { catList, entryList } = data;
@@ -32,8 +32,8 @@ export default function HomePage() {
     const currentCategory = catList[categoryKeys[currCat]]; // Current category
     const sections = Object.keys(currentCategory); // Sections within the current category
     const currentSection = currentCategory[sections[currSec]]; // Current section entries
-    const currentEntry = currentSection[currEntry]; //
-    console.log(currentEntry)
+    //const currentEntry = currentSection[currEntry]; //
+    //console.log(currentEntry)
 
     const handleNextEntry = () => {
         // Move to the next entry
@@ -94,12 +94,10 @@ export default function HomePage() {
                    selectedEntry={selectedSec}
                    entryList={entryList}
                    currEntry={currEntry}
+                   onBack={handlePreviousEntry}
+                    onNext={handleNextEntry}
                 />
             </div>
-            <Footer 
-                onBack={handlePreviousEntry}
-                onNext={handleNextEntry}
-            /> 
         </main>
     )
 }

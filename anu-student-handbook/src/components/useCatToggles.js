@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-const useCategoryToggles = () => {
-  const [toggles, setToggles] = useState({});
+const useCategoryToggles = (initialToggles = {}) => {
+  const [toggles, setToggles] = useState(initialToggles);
 
   const toggleCategory = (category) => {
-    setToggles(prevToggles => ({
+    setToggles((prevToggles) => ({
       ...prevToggles,
-      [category]: !prevToggles[category]
+      [category]: !prevToggles[category],
     }));
   };
 

@@ -2,19 +2,21 @@ import PropTypes from 'prop-types';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 
-export default function Header({categories, toggleCategory, onEntryClick, toggleHandler, isToggled}) {
+export default function Header({categories, onEntryClick, toggleHandler}) {
     const Capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
     let catObj = Object.keys(categories)
     return (
-        toggleHandler &&
-        <header className="bg-gray-100 w-3/4 p-2 header_container">
-        <div className='header_container_content'>
+        //toggleHandler &&
+        <header className={`bg-gray-100 p-2 header_container  ${toggleHandler
+                ? " left-0 w-3/12 border rounded-xl ease-in-out duration-500 h-full"
+                : "ease-in-out w-3/12 duration-500 fixed left-[-100%]"}`}>
+        <div className={`header_container_content`}>
             <div>
                 {catObj.map((category, index) => {
                         return (
                             <div key={index} className='header_container_content_category'>
                                 <h2 className='font-black text-xs sm:text-sm hover:bg-gray-200 active:bg-red-400'
-                                    onClick={() => toggleCategory(category)}
+                                    //onClick={() => toggleCategory(category)}
                                 >
                                     {category.toUpperCase()}
                                     {/* <span 
@@ -26,7 +28,7 @@ export default function Header({categories, toggleCategory, onEntryClick, toggle
                                         }
                                     </span>   */}
                                 </h2>
-                                {isToggled(category) && 
+                                {
                                     (<ul>
                                         {
                                             categories[category].map((section, index) => {
