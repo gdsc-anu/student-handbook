@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 import Footer from "./Footer"
 
-export default function Article({ selectedEntry, entryList, currEntry, onBack, onNext }) {
+export default function Article({ selectedEntry,entryList, currEntry, onBack, onNext }) {
+    //const currentEntry = selectedSection[currEntry];
 
     return (
         <div className="relative flex flex-col justify-between min-h-screen p-2">
@@ -14,12 +15,18 @@ export default function Article({ selectedEntry, entryList, currEntry, onBack, o
                     zIndex: '-1',
                 }}> 
             </div>
-                {selectedEntry && entryList[selectedEntry] && (
-                    <div className="">
-                        <h3 className="font-bold text-center text-sm md:text-base underline">{entryList[selectedEntry][currEntry]?.title}:</h3>{" "}
-                        <p className="text-justify text-sm md:text-base  px-4">{entryList[selectedEntry][currEntry]?.content}</p>
-                    </div>
-                )}
+            {entryList[selectedEntry] && entryList[selectedEntry][currEntry] ? (
+                <div className="flex flex-col justify-center items-center">
+                    <h3 className="font-bold text-center text-sm md:text-base underline">
+                        {entryList[selectedEntry][currEntry]?.title}:
+                    </h3>
+                    <p className="text-justify text-sm md:text-base px-4">
+                        {entryList[selectedEntry][currEntry]?.content}
+                    </p>
+                </div>
+            ) : (
+                <p>Loading...</p>
+            )}
                 <Footer 
                     onBack = {onBack}
                     onNext = {onNext}
@@ -38,4 +45,26 @@ Article.propTypes = {
     currEntry: PropTypes.number.isRequired,
     onBack: PropTypes.func.isRequired,
     onNext: PropTypes.func.isRequired,
+    selectedSection: PropTypes.object.isRequired,
 };
+
+ {/* {selectedEntry && entryList[selectedEntry] ? (
+     currentEntry ? (
+         <div className="flex flex-col justify-center items-center">
+             <h3 className="font-bold text-center text-sm md:text-base underline">
+                 {entryList[selectedEntry][currEntry]?.title}:
+             </h3>
+             <p className="text-justify text-sm md:text-base px-4">
+                 {entryList[selectedEntry][currEntry]?.content}
+             </p>
+         </div>
+     ) : (
+         <p>No entry selected</p>
+     )
+     ) : 
+ null} */}
+         {/* { <div className="">
+             <h3 className="font-bold text-center text-sm md:text-base underline">{entryList[selectedEntry][currEntry]?.title}:</h3>{" "}
+             <p className="text-justify text-sm md:text-base  px-4">{entryList[selectedEntry][currEntry]?.content}</p>
+         </div>
+     )} } */}

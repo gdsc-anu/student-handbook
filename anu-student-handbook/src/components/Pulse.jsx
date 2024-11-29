@@ -1,6 +1,6 @@
 const Pulse = () => {
     return (
-        <div className="border border-gray-300 shadow rounded-md p-4 max-w-lg w-full mx-auto mt-20">
+        <div className="border border-gray-100 shadow rounded-md p-4 max-w-lg w-full mx-auto mt-20">
             <div className="animate-pulse flex space-x-4">
                 <div className="flex-1 space-y-6 py-1">
                     <div className="h-8 bg-slate-700 rounded"></div>

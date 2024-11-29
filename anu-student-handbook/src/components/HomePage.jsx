@@ -3,19 +3,21 @@ import Nav from "./Nav";
 import Article from "./Article";
 import Pulse from "./Pulse";
 import useCategories from "../lib/api"
-import useCategoryToggles from './useCatToggles';
+import useCategoryToggles from '../lib/useCatToggles';
 import { useState } from "react";
 
 
 export default function HomePage() {
-    const { toggleCategory, isToggled } = useCategoryToggles();
-    const [selectedSec, setSelectedSec] = useState(null);
-    const [toggleHandler, setToggleHandler] = useState(false);
-    const [currEntry, setCurrEntry] = useState(0);
-    const [currSec, setCurrSec] = useState(0);
-    const [currCat, setCurrCat] = useState(0);
+    const { toggleCategory, isToggled } = useCategoryToggles(); //toggle the selected category and the section
+    const [selectedSec, setSelectedSec] = useState(0);
+    const [toggleHandler, setToggleHandler] = useState(false); //toggle the header comp as a sidebar
+    const [currEntry, setCurrEntry] = useState(0);  //track the curr entry
+    const [currSec, setCurrSec] = useState(0); //track the curr section
+    const [currCat, setCurrCat] = useState(0);  // track the curr category
     
     const handleToggle = () =>  setToggleHandler(!toggleHandler);
+
+    //loads the entries when the respective section is clicked
     const handleEntryClick = (index) => {
         setSelectedSec(index);
         setCurrEntry(0)
@@ -26,13 +28,28 @@ export default function HomePage() {
     if (isLoading) return <Pulse />;
     if (error) return <p>Error fetching categories: {error.message}</p>;
     
-    const { catList, entryList } = data;
     
+    const { catList, entryList } = data;
     const categoryKeys = Object.keys(catList); // List of category keys
-    const currentCategory = catList[categoryKeys[currCat]]; // Current category
-    const sections = Object.keys(currentCategory); // Sections within the current category
-    const currentSection = currentCategory[sections[currSec]]; // Current section entries
-    //const currentEntry = currentSection[currEntry]; //
+    const entryKeys = Object.keys(entryList);
+    //console.log(entryKeys);
+    // categoryKeys.map((item, index) => {
+    //     console.log(catList[item][index]);
+    // })
+
+    // entryKeys.map((item, index) => {
+    //     console.log(entryList[item][index])
+    // })
+    const currentCategory =  categoryKeys.map(item => item)//categoryKeys.map((item, index) => {return catList[item][index]});// catList[categoryKeys[currCat]]; Current category
+    //console.log(`Current Category: ${currentCategory}`);
+    //const sections = Object.keys(currentCategory); // Sections within the current category
+    const currentSection = categoryKeys.map((item, index) => catList[item][index]);//currentCategory[sections[currSec]]; // Current section entries 
+    console.log(`Current Section: ${currentSection}`);
+    const currentEntry = entryKeys.map((item, index) =>  entryList[item][index]); //currentSection[currEntry]; //
+    currentEntry.forEach((entry, idx) => {
+        console.log(`Entry ${idx}:`, entry);
+    });
+    //console.log(`Current Entry: ${currentEntry}`);
     //console.log(currentEntry)
 
     const handleNextEntry = () => {
@@ -91,6 +108,7 @@ export default function HomePage() {
                     toggleHandler={toggleHandler}
                 />
                 <Article
+                   selectedSection={currentSection}
                    selectedEntry={selectedSec}
                    entryList={entryList}
                    currEntry={currEntry}
