@@ -1,45 +1,52 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faSearch } from '@fortawesome/free-solid-svg-icons';
 import PropsTypes from 'prop-types';
 
-export default function Nav({handleToggle, toggleHandler}) {
+export default function Nav({setToggleHandler, toggleHandler}) {
     return(
         
-        <div className="flex bg-gray-100 py-5 items-center px-4">
-        
-            {(toggleHandler) ? 
-                <FontAwesomeIcon icon={faXmark} color="#C92A2A" onClick={handleToggle}/>:
-                <FontAwesomeIcon icon={faBars} color="#C92A2A" onClick={handleToggle}/>
-            }
-            <img 
-                    src="https://www.figma.com/file/gjzrE5bfOhNoYWNSej5Ell/image/d1acd497fdc6d2dea2556a2609ef6f4d4838dc8d" 
-                    alt="school-logo"
-                    className='w-16 md:w-40 ml-2 sm:ml-20'
-            />
-            <div className="relative mx-4">
-                <input 
-                    className="w-32 md:w-96 bg-gray-300 py-1 px-4 rounded-2xl pl-10"
-                    type="text" 
-                    placeholder="Search" 
-                />
+        <nav className="flex justify-between items-center bg-gray-100 py-3 px-4">
+            <div className=' flex items-center text-x1'>
                 <FontAwesomeIcon 
-                    icon={faSearch} 
-                    className=" absolute top-0 left-3 mt-2 text-gray-500"
-                />   
+                    icon={faBars} color="#C92A2A" 
+                    className='cursor-pointer' 
+                    onClick={() => setToggleHandler(!toggleHandler)}
+                />  
+
+                <img 
+                        src="https://www.figma.com/file/gjzrE5bfOhNoYWNSej5Ell/image/d1acd497fdc6d2dea2556a2609ef6f4d4838dc8d" 
+                        alt="school-logo"
+                        className='w-16 md:w-40 ml-2 sm:ml-20'
+                />
             </div>
-            {/* <FontAwesomeIcon 
-                icon={faSearch} 
-                className="sm:hidden text-gray-500 mx-auto"
-            /> */}
-            <img 
-                src="src/images/icons8-chatbot-32.png" 
-                alt="vector"
-            />
-        </div>
+            <div className="flex items-center gap-x-5">
+               <div className='relative md:w-65'>
+                    <input
+                        className="w-full bg-gray-300 py-1 px-4 rounded shadow outline-none pl-12 hidden md:block"
+                        type="text" 
+                        placeholder="Search" 
+                    />
+                    <span className='relative md:absolute inset-y-0 left-0 flex items-center pl-2'>
+                        <button className='p-1 focus:outline-none text-black md:text-gray-200'>
+                            <FontAwesomeIcon 
+                                icon={faSearch} 
+                                // className=" absolute top-0 left-3 mt-2 text-gray-500"
+                            />   
+                        </button>
+                    </span>
+               </div>
+            </div>
+            <div className=''>
+                <img 
+                    src="src/images/icons8-chatbot-32.png" 
+                    alt="vector"
+                />
+            </div>
+        </nav>
     )
 }
 
 Nav.propTypes = {
-    handleToggle: PropsTypes.func.isRequired,
+    setToggleHandler: PropsTypes.func.isRequired,
     toggleHandler: PropsTypes.bool.isRequired
 }

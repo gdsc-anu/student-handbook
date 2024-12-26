@@ -1,121 +1,157 @@
 import Header from "./Header";
-import Nav from "./Nav";
 import Article from "./Article";
 import Pulse from "./Pulse";
-import useCategories from "../lib/api"
-import useCategoryToggles from '../lib/useCatToggles';
-import { useState } from "react";
-
+import useCategories from "../lib/api";
+import { useEffect, useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 export default function HomePage() {
-    const { toggleCategory, isToggled } = useCategoryToggles(); //toggle the selected category and the section
-    const [selectedSec, setSelectedSec] = useState(0);
-    const [toggleHandler, setToggleHandler] = useState(false); //toggle the header comp as a sidebar
-    const [currEntry, setCurrEntry] = useState(0);  //track the curr entry
-    const [currSec, setCurrSec] = useState(0); //track the curr section
-    const [currCat, setCurrCat] = useState(0);  // track the curr category
-    
-    const handleToggle = () =>  setToggleHandler(!toggleHandler);
+    const [currentContent, setCurrentContent] = useState(null);
+    const [toggleHandler, setToggleHandler] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
 
-    //loads the entries when the respective section is clicked
-    const handleEntryClick = (index) => {
-        setSelectedSec(index);
-        setCurrEntry(0)
-    };
-    
     const { data, isLoading, error } = useCategories();
-    
+
+    const currentCategory = searchParams.get("category");
+    const currentSection = searchParams.get("section");
+    const currentEntry = searchParams.get("entry");
+
+    useEffect(() => {
+        if (!searchParams.get("category") || !searchParams.get("section") || !searchParams.get("entry")) {
+            setSearchParams({ category: "1", section: "1", entry: "1" });
+        }
+    }, [searchParams, setSearchParams]);
+
+    useEffect(() => {
+        if (data) {
+            const category = data.find((c) => c.id.toString() === currentCategory);
+            const section = category?.sections.find((s) => s.id.toString() === currentSection);
+            const entry = section?.entries.find((e) => e.id.toString() === currentEntry);
+
+            setCurrentContent(entry || null);
+        }
+    }, [data, currentCategory, currentSection, currentEntry]);
+
     if (isLoading) return <Pulse />;
     if (error) return <p>Error fetching categories: {error.message}</p>;
-    
-    
-    const { catList, entryList } = data;
-    const categoryKeys = Object.keys(catList); // List of category keys
-    const entryKeys = Object.keys(entryList);
-    //console.log(entryKeys);
-    // categoryKeys.map((item, index) => {
-    //     console.log(catList[item][index]);
-    // })
 
-    // entryKeys.map((item, index) => {
-    //     console.log(entryList[item][index])
-    // })
-    const currentCategory =  categoryKeys.map(item => item)//categoryKeys.map((item, index) => {return catList[item][index]});// catList[categoryKeys[currCat]]; Current category
-    //console.log(`Current Category: ${currentCategory}`);
-    //const sections = Object.keys(currentCategory); // Sections within the current category
-    const currentSection = categoryKeys.map((item, index) => catList[item][index]);//currentCategory[sections[currSec]]; // Current section entries 
-    console.log(`Current Section: ${currentSection}`);
-    const currentEntry = entryKeys.map((item, index) =>  entryList[item][index]); //currentSection[currEntry]; //
-    currentEntry.forEach((entry, idx) => {
-        console.log(`Entry ${idx}:`, entry);
-    });
-    //console.log(`Current Entry: ${currentEntry}`);
-    //console.log(currentEntry)
+    const handleNavigation = (catId, secId, entryId) => {
+        navigate(`/?category=${catId}&section=${secId}&entry=${entryId}`);
+    };
 
-    const handleNextEntry = () => {
-        // Move to the next entry
-        if (currEntry < currentSection.length - 1) {
-            setCurrEntry((prevIndex) => prevIndex + 1);
-        }
-        // Move to the next section
-        else if (currSec < sections.length - 1) {
-            setCurrSec((prevIndex) => prevIndex + 1);
-            setCurrEntry(0); // Reset entry index for the new section
-        }
-        // Move to the next category
-        else if (currCat < categoryKeys.length - 1) {
-            setCurrCat((prevIndex) => prevIndex + 1);
-            setCurrSec(0); // Reset section index for the new category
-            setCurrEntry(0); // Reset entry index for the new category
+    // Find current category and section indices
+        const categoryIndex = data.findIndex(c => c.id.toString() === currentCategory);
+        const category = data[categoryIndex];
+        const sectionIndex = category?.sections.findIndex(s => s.id.toString() === currentSection);
+        const section = category?.sections[sectionIndex];
+
+        // Get current entry index
+        const currentEntryIndex = section?.entries.findIndex(
+            entry => entry.id.toString() === currentEntry
+        );
+
+        // Calculate previous entry, section, and category
+        const getPreviousNavigation = () => {
+            // If not at first entry of current section
+            if (currentEntryIndex > 0) {
+                return {
+                    category: currentCategory,
+                    section: currentSection,
+                    entry: section.entries[currentEntryIndex - 1].id.toString()
+                };
+            }
+            
+            // If at first entry of section but not first section
+            if (sectionIndex > 0) {
+                const previousSection = category.sections[sectionIndex - 1];
+                return {
+                    category: currentCategory,
+                    section: previousSection.id.toString(),
+                    entry: previousSection.entries[previousSection.entries.length - 1].id.toString()
+                };
+            }
+            
+            // If at first entry of first section but not first category
+            if (categoryIndex > 0) {
+                const previousCategory = data[categoryIndex - 1];
+                const lastSection = previousCategory.sections[previousCategory.sections.length - 1];
+                return {
+                    category: previousCategory.id.toString(),
+                    section: lastSection.id.toString(),
+                    entry: lastSection.entries[lastSection.entries.length - 1].id.toString()
+                };
+            }
+            
+            return null;
+        };
+
+        // Calculate next entry, section, and category
+        const getNextNavigation = () => {
+            // If not at last entry of current section
+            if (currentEntryIndex < section.entries.length - 1) {
+                return {
+                    category: currentCategory,
+                    section: currentSection,
+                    entry: section.entries[currentEntryIndex + 1].id.toString()
+                };
+            }
+            
+            // If at last entry of section but not last section
+            if (sectionIndex < category.sections.length - 1) {
+                const nextSection = category.sections[sectionIndex + 1];
+                return {
+                    category: currentCategory,
+                    section: nextSection.id.toString(),
+                    entry: nextSection.entries[0].id.toString()
+                };
+            }
+            
+            // If at last entry of last section but not last category
+            if (categoryIndex < data.length - 1) {
+                const nextCategory = data[categoryIndex + 1];
+                const firstSection = nextCategory.sections[0];
+                return {
+                    category: nextCategory.id.toString(),
+                    section: firstSection.id.toString(),
+                    entry: firstSection.entries[0].id.toString()
+                };
+            }
+            
+            return null;
+        };
+
+    const previousNavigation = getPreviousNavigation();
+    const nextNavigation = getNextNavigation();
+
+    const handlePagination = (direction) => {
+        const navigation = direction === 'prev' ? previousNavigation : nextNavigation;
+        
+        if (navigation) {
+            navigate(
+                `/?category=${navigation.category}&section=${navigation.section}&entry=${navigation.entry}`
+            );
         }
     };
 
-    const handlePreviousEntry = () => {
-        // Move to the previous entry
-        if (currEntry > 0) {
-            setCurrEntry((prevIndex) => prevIndex - 1);
-        }
-        // Move to the previous section
-        else if (currSec > 0) {
-            setCurrSec((prevIndex) => prevIndex - 1);
-            const prevSection = currentCategory[sections[currSec - 1]];
-            setCurrEntry(prevSection.length - 1); // Go to the last entry of the previous section
-        }
-        // Move to the previous category
-        else if (currCat > 0) {
-            setCurrCat((prevIndex) => prevIndex - 1);
-            const prevCategory = catList[categoryKeys[currCat - 1]];
-            const lastSection = Object.keys(prevCategory).slice(-1)[0]; // Last section of the previous category
-            const lastSectionEntries = prevCategory[lastSection];
-            setCurrSec(Object.keys(prevCategory).length - 1); // Set section to the last
-            setCurrEntry(lastSectionEntries.length - 1); // Set entry to the last
-        }
-    };
-    
-
-    return(
-        <main>
-           <Nav
-                handleToggle={handleToggle}
+    return (
+        <main className="flex">
+            <Header
+                data={data}
                 toggleHandler={toggleHandler}
+                handleNavigation={handleNavigation}
+                currentContent={currentContent}
             />
-            <div className="flex">
-                <Header
-                    categories={catList}
-                    toggleCategory={toggleCategory}
-                    isToggled={isToggled}
-                    onEntryClick={handleEntryClick}
-                    toggleHandler={toggleHandler}
-                />
-                <Article
-                   selectedSection={currentSection}
-                   selectedEntry={selectedSec}
-                   entryList={entryList}
-                   currEntry={currEntry}
-                   onBack={handlePreviousEntry}
-                    onNext={handleNextEntry}
-                />
-            </div>
+            <Article
+                data={data}
+                setToggleHandler={setToggleHandler}
+                toggleHandler={toggleHandler}
+                selectedSection={currentSection}
+                currentContent={currentContent}
+                handlePagination={handlePagination}
+                previousNavigation={previousNavigation}
+                nextNavigation={nextNavigation}
+            />
         </main>
-    )
+    );
 }

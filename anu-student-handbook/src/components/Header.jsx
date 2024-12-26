@@ -1,67 +1,107 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+// import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import useCategoryToggles from '../lib/useCatToggles';
 
-export default function Header({categories, onEntryClick, toggleHandler}) {
-    const Capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
-    let catObj = Object.keys(categories)
+export default function Header({ data, toggleHandler, handleNavigation, currentContent }) {
+    const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+    const { toggles, toggleCategory, isToggled } = useCategoryToggles();
+
     return (
-        //toggleHandler &&
-        <header className={`bg-gray-100 p-2 header_container  ${toggleHandler
-                ? " left-0 w-3/12 border rounded-xl ease-in-out duration-500 h-full"
-                : "ease-in-out w-3/12 duration-500 fixed left-[-100%]"}`}>
-        <div className={`header_container_content`}>
-            <div>
-                {catObj.map((category, index) => {
-                        return (
-                            <div key={index} className='header_container_content_category'>
-                                <h2 className='font-black text-xs sm:text-sm hover:bg-gray-200 active:bg-red-400'
-                                    //onClick={() => toggleCategory(category)}
+        <header
+            className={`${
+                toggleHandler ? "hidden" : "block"
+            } ease-in-out duration-500 w-80 fixed h-full px-4 py-2`}
+        >
+            <div className="header_container_content">
+                <div className="mt-3">
+                    {data.map((category) => (
+                        <div key={category.id} className="header_container_content_category">
+                           <div className="flex items-center gap-x-20">
+                                <h3 className="rounded hover:shadow text-xs cursor-pointer"
+                                        onClick={() => toggleCategory(category.id)}
                                 >
-                                    {category.toUpperCase()}
-                                    {/* <span 
-                                        onClick={() => toggleCategory(category)}
-                                    >
-                                        {isToggled(category) ? 
-                                            <FontAwesomeIcon icon={faMinus} className='sm:ml-12 ml-4'/>:
-                                            <FontAwesomeIcon icon={faPlus} className='sm:ml-12 ml-4'/>
-                                        }
-                                    </span>   */}
-                                </h2>
-                                {
-                                    (<ul>
-                                        {
-                                            categories[category].map((section, index) => {
-                                                return (
-                                                    <li key={index} className='pl-4 border-l-2 border-slate-400 hover:bg-gray-200 pb-2 active:bg-red-400'
-                                                        onClick={() => onEntryClick(section)}
-                                                    >
-                                                        {Capitalize(section)}
-                                                    </li>
-                                                )
-                                            })
-                                        }
-                                    </ul>)
-                                }
+                                    {category.title.toUpperCase()}
+                                    
+                                </h3>
+                                {/* <span  className="cursor-pointer"
+                                    onClick={() => toggleCategory(category.id)}>
+                                    {  isToggled(category.id) ? 
+                                        <FontAwesomeIcon icon={faChevronDown}/>:
+                                        <FontAwesomeIcon icon={faChevronUp}/>
+                                    }
+                                </span>  */}
+                           </div>
+                            <div className={`${isToggled(category.id) ? "hidden": "block"}`}>
+                                {category.sections.map((section) => (
+                                    <div key={section.id}>
+                                        <div className="flex items-center">
+                                            <h4 
+                                                className="rounded hover:shadow pl-4 border-slate-400 pb-2 active:bg-red-400 text-xs cursor-pointer"
+                                                onClick={() => toggleCategory(section.id)}
+                                            >
+                                                {capitalize(section.title)}
+                                            </h4>
+                                            {/* <span  className="cursor-pointer"
+                                                onClick={() => toggleCategory(section.id)}>
+                                                {  isToggled(section.id) ? 
+                                                    <FontAwesomeIcon icon={faChevronDown}/>:
+                                                    <FontAwesomeIcon icon={faChevronUp}/>
+                                                }
+                                            </span>     */}
+                                        </div> 
+                                        <div className={`${isToggled(section.id) ? "hidden": "block"}`}>
+                                            {section.entries.map((entry) => (
+                                                <div
+                                                    key={entry.id}
+                                                    className={`cursor-pointer pl-4 py-1 text-xs ${
+                                                        currentContent?.id === entry.id
+                                                            ? "text-blue-600 font-medium"
+                                                            : "text-gray-600 hover:text-gray-900"
+                                                    }`}
+                                                    onClick={() =>
+                                                        handleNavigation(category.id, section.id, entry.id)
+                                                    }
+                                                >
+                                                    <p>
+                                                        {entry.title}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        )
-                    })
-                }
+                        </div>
+                    ))}
+                </div>
             </div>
-        </div>
-        <div className="scrollbar">
-        <div className="scrollbar__track" />
-        <div className="scrollbar__thumb" />
-</div>
-    </header>
-        
-    )
+        </header>
+    );
 }
 
 Header.propTypes = {
-    categories: PropTypes.object.isRequired,
+    data: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            title: PropTypes.string.isRequired,
+            sections: PropTypes.arrayOf(
+                PropTypes.shape({
+                    id: PropTypes.number.isRequired,
+                    title: PropTypes.string.isRequired,
+                    entries: PropTypes.arrayOf(
+                        PropTypes.shape({
+                            id: PropTypes.number.isRequired,
+                            title: PropTypes.string.isRequired,
+                        })
+                    ).isRequired,
+                })
+            ).isRequired,
+        })
+    ).isRequired,
     toggleHandler: PropTypes.bool.isRequired,
-    isToggled: PropTypes.func.isRequired,
-    toggleCategory: PropTypes.func.isRequired,
-    onEntryClick: PropTypes.func.isRequired
-}
+    handleNavigation: PropTypes.func.isRequired,
+    currentContent: PropTypes.shape({
+        id: PropTypes.number,
+    }),
+};
