@@ -5,7 +5,7 @@ import useCategoryToggles from '../lib/useCatToggles';
 
 export default function Header({ data, toggleHandler, handleNavigation, currentContent }) {
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
-    const { toggles, toggleCategory, isToggled } = useCategoryToggles();
+    const { toggleCategory, isToggled } = useCategoryToggles();
 
     return (
         <header
@@ -56,7 +56,7 @@ export default function Header({ data, toggleHandler, handleNavigation, currentC
                                                     key={entry.id}
                                                     className={`cursor-pointer pl-4 py-1 text-xs ${
                                                         currentContent?.id === entry.id
-                                                            ? "text-blue-600 font-medium"
+                                                            ? "text-gray-900 font-medium"
                                                             : "text-gray-600 hover:text-gray-900"
                                                     }`}
                                                     onClick={() =>
