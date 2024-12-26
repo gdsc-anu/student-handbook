@@ -1,3 +1,19 @@
+::-webkit-scrollbar {
+  background: transparent;
+  height: 8px;
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 0.25rem;
+  background: rgb(148 163 184);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
 .slide {
   font-size: 1.5rem;
   padding: 0;
@@ -30,6 +46,44 @@
   background: #68b8ff;
   border: 1px solid transparent;
 }
+
+/* start of the custom scrollbar styling */
+.header_container {
+  scrollbar-width: thin;
+  scrollbar-color: #718096 #edf2f7;
+  height: 100vh;
+}
+
+.header_container_content {
+  height: 100%;
+  padding-right: 1rem;
+  overflow: auto;
+}
+
+.scrollbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 0.75rem;
+}
+
+.scrollbar__thumb {
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.scrollbar__track {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+/* End of the custom scrollbar styling */
+
 
 
 /* Medium devices (landscape tablets, 768px and up) */
